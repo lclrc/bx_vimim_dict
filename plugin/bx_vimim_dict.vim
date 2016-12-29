@@ -43,7 +43,7 @@ endif
 let s:path = expand("<sfile>:p:h") . "/"
 inoremap<silent><expr> <C-L> <SID>Toggle()
 
-function CVimIM_Dict(findstart, keyboard)
+function! CVimIM_Dict(findstart, keyboard)
     "补全函数
     "首先必须要返回一个起始点, 从超始点到当前光标处, 即是需要
     "匹配的字符.
@@ -102,7 +102,7 @@ else
 endif
 endfunction
 
-function s:GetTable()
+function! s:GetTable()
     "读取码表
     let tableFile = s:path . g:bx_im_code_fn
     try
@@ -113,7 +113,7 @@ function s:GetTable()
     return table
 endfunction
 
-function s:GetMatchFrom(keyboard)
+function! s:GetMatchFrom(keyboard)
     "把参数 keyboard 拿到 g:bx_im_table 去匹配，返回字典内的行
     let patterns = '^' . a:keyboard
     let bm_im_charfirstIndex = char2nr(a:keyboard[0]) - 97
@@ -145,7 +145,7 @@ function s:GetMatchFrom(keyboard)
     endif
 endfunction
 
-function s:MapAnyKeys()
+function! s:MapAnyKeys()
     inoremap<buffer><silent> a a<C-R>=<SID>AnyKey('a')<CR>
     inoremap<buffer><silent> b b<C-R>=<SID>AnyKey('b')<CR>
     inoremap<buffer><silent> c c<C-R>=<SID>AnyKey('c')<CR>
@@ -176,7 +176,7 @@ function s:MapAnyKeys()
     endif
 endfunction
 
-function s:UnMapAnyKeys()
+function! s:UnMapAnyKeys()
     iunmap<buffer> a
     iunmap<buffer> b
     iunmap<buffer> c
@@ -207,7 +207,7 @@ function s:UnMapAnyKeys()
     endif
 endfunction
 
-function <SID>Toggle()
+function! <SID>Toggle()
     "切换中英文状态
     if !exists('b:chineseMode')
         let b:chineseMode = 0
@@ -222,7 +222,7 @@ function <SID>Toggle()
     silent!exe 'silent!return "' . WTF . '"'
 endfunction
 
-function s:Init()
+function! s:Init()
     " 初始化函数, 要设置需要的一些变量
     " 在更改环境参数的时候, 先把之前的环境参数备份, 以便在切换到
     " 英文状态时还原.
@@ -294,6 +294,7 @@ function s:Init()
     " map 一些特殊的键
     inoremap<buffer> <Space> <C-R>=<SID>SmartSpace()<CR>
     inoremap<buffer> <BS> <C-R>=<SID>SmartBack()<CR>
+    inoremap<buffer> <C-H> <C-R>=<SID>SmartBack()<CR>
     inoremap<buffer> <CR> <C-R>=<SID>SmartEnter()<CR>
     inoremap<buffer> <C-\> <C-R>=<SID>ToggleChinesePunc()<CR>
     inoremap<buffer> <ESC> <C-R>=<SID>RZ()<CR><ESC>
@@ -306,7 +307,7 @@ function s:Init()
     return ''
 endfunction
 
-function s:Exit()
+function! s:Exit()
     " 退出中文输入状态调用此函数,
     " 它会还原以前的环境变量, 同时把一些变量设置成默认,
     " 它还会 unmap 一些映射.
@@ -334,6 +335,7 @@ function s:Exit()
     " 还原特殊键的 map
     iunmap<buffer> <Space>
     iunmap<buffer> <BS>
+    iunmap<buffer> <C-H>
     iunmap<buffer> <CR>
     iunmap<buffer> <C-\>
     iunmap<buffer> <ESC>
@@ -366,7 +368,7 @@ function s:Exit()
     return ''
 endfunction
 
-function <SID>AnyKey(key)
+function! <SID>AnyKey(key)
     "[a-z]在输入过程中的行为
     let s:typeLen += 1
     if s:typeLen > 1
@@ -415,7 +417,7 @@ function <SID>AnyKey(key)
     silent!exe 'silent!return "' . temp . '"'
 endfunction
 
-function s:RefreshMatch()
+function! s:RefreshMatch()
     "刷新匹配列表.
     "在更新计数器 s:typeLen 时注意考虑是否要调用.
     "考虑 <Space> <BS> <Enter> 这些行为时考虑是否要调用.
@@ -428,7 +430,7 @@ function s:RefreshMatch()
     let s:matchFrom = s:GetMatchFrom(temstr[from : to])
 endfunction
 
-function <SID>SmartSpace()
+function! <SID>SmartSpace()
     "<Space>在输入过程中的行为
     let space = ' '
     if pumvisible()
@@ -446,7 +448,7 @@ function <SID>SmartSpace()
     silent!exe 'silent!return "' . space . '"'
 endfunction
 
-function <SID>SmartEnter()
+function! <SID>SmartEnter()
     "<Enter>在输入过程中的行为
     if pumvisible()
         "如果有匹配列表, 则上屏第一个匹配
@@ -461,7 +463,7 @@ function <SID>SmartEnter()
     silent!exe 'silent!return "' . enter . '"'
 endfunction
 
-function <SID>SmartBack()
+function! <SID>SmartBack()
     "<Backspace>在输入过程中的行为
     let bs = "\<BS>"
     if s:typeLen > 1
@@ -490,7 +492,7 @@ function <SID>SmartBack()
     silent!exe 'silent!return "' . bs . '"'
 endfunction
 
-function s:MapChinesePunc()
+function! s:MapChinesePunc()
     "映射中文标点
     let b:chinesePunc = 1
     inoremap<buffer> , <C-R>=<SID>PuncIn()<CR>，
@@ -519,7 +521,7 @@ function s:MapChinesePunc()
     inoremap<buffer> " <C-R>=<SID>PuncIn()<CR><C-R>=<SID>ToggleChineseQuote('"')<CR>
 endfunction
 
-function s:UnMapChinesePunc()
+function! s:UnMapChinesePunc()
     " 解除映射中文标点
     let b:chinesePunc = 0
     inoremap<buffer> , <C-R>=<SID>PuncIn()<CR>,
@@ -548,7 +550,7 @@ function s:UnMapChinesePunc()
     inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>"
 endfunction
 
-function <SID>ToggleChinesePunc()
+function! <SID>ToggleChinesePunc()
     "中英文标点状态的切换
     if b:chinesePunc > 0
         call s:UnMapChinesePunc()
@@ -558,7 +560,7 @@ function <SID>ToggleChinesePunc()
     return ''
 endfunction
 
-function <SID>ToggleChineseQuote(mark)
+function! <SID>ToggleChineseQuote(mark)
     " 中文引号成对切换
     if a:mark == "'"
         if !exists('b:singleMode')
@@ -575,7 +577,7 @@ function <SID>ToggleChineseQuote(mark)
     endif
 endfunction
 
-function s:WTF()
+function! s:WTF()
     " ...
     let WTF = "\<ESC>a"
     silent!exe 'silent!return "' . WTF . '"'
@@ -591,12 +593,12 @@ function <SID>PuncIn()
     silent!exe 'silent!return "' . puncIn . '"'
 endfunction
 
-function <SID>RZ()
+function! <SID>RZ()
     let s:typeLen = 0
     let s:matchFrom = -1
     return ''
 endfunction
 
-function s:Debug(var)
+function! s:Debug(var)
     let a = inputdialog(a:var)
 endfunction
