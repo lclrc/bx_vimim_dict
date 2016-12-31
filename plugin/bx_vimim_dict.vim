@@ -11,7 +11,7 @@
 "======================================================================
 
 " 最多四键输入，<C-N> <C-P> 上下选择中文
-" 中英文输入切换：插入模式下使用 CTRL-L
+" 中英文输入切换：插入模式下使用 CTRL-_
 " 中英文标点切换：插入模式下使用 CTRL-\
 " 空格输入中文，回车输入原英文字母
 "
@@ -41,7 +41,7 @@ else
 endif
 
 let s:path = expand("<sfile>:p:h") . "/"
-inoremap<silent><expr> <C-L> <SID>Toggle()
+inoremap<silent><expr> <C-_> <SID>Toggle()
 
 function! CVimIM_Dict(findstart, keyboard)
     "补全函数
