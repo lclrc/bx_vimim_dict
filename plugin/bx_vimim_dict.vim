@@ -213,9 +213,15 @@ function! <SID>Toggle()
         let b:chineseMode = 0
     endif
     if b:chineseMode < 1
+        if exists('g:loaded_neocomplete')
+            call neocomplete#init#disable()
+        endif
         call s:Init()
     elseif b:chineseMode > 0
         call s:Exit()
+        if exists('g:loaded_neocomplete')
+            call neocomplete#init#enable()
+        endif
     endif
     "不加空格的话,会出现光标退到第一列的事件(第一次到一个新行,且前面有缩进)
     let WTF = "\<SPACE>\<BS>\<C-O>:redraws\<CR>"
