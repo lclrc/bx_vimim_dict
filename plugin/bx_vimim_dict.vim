@@ -589,7 +589,7 @@ function! s:WTF()
     silent!exe 'silent!return "' . WTF . '"'
 endfunction
 
-function <SID>PuncIn()
+function! <SID>PuncIn()
     let s:typeLen = 0
     if pumvisible()
         let puncIn = "\<C-Y>"
